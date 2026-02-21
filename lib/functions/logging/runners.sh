@@ -112,11 +112,17 @@ function chroot_sdcard_apt_get() {
 
 	# Remove stale apt lock files left by previous failed/interrupted runs.
 	# "Held by process 0" means no real process holds the lock; it's just a leftover file.
+	# Must remove from both the chroot paths and the host-side bind-mount source dirs.
 	run_host_command_logged rm -fv \
 		"${SDCARD}/var/cache/apt/archives/lock" \
 		"${SDCARD}/var/lib/apt/lists/lock" \
 		"${SDCARD}/var/lib/dpkg/lock" \
 		"${SDCARD}/var/lib/dpkg/lock-frontend"
+	if [[ "${LOCAL_APT_CACHE_INFO[USE]}" == "yes" ]]; then
+		run_host_command_logged rm -fv \
+			"${LOCAL_APT_CACHE_INFO[HOST_DEBS_DIR]}/lock" \
+			"${LOCAL_APT_CACHE_INFO[HOST_LISTS_DIR]}/lock"
+	fi
 
 	local chroot_apt_result=1
 	if [[ "${apt_get_command}" == "apt-get" ]]; then
