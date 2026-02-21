@@ -23,14 +23,18 @@ SET_LANG_BASED_ON_LOCATION=n
 PRESET_NET_CHANGE_DEFAULTS=0
 PRESET_CONNECT_WIRELESS=n
 EOF
+`1`
+# Build
+./compile.sh build \
+  BOARD=orangepi5-ultra  \
+  BRANCH=vendor \
+  BUILD_DESKTOP=yes \
+  BUILD_MINIMAL=no \
+  DESKTOP_APPGROUPS_SELECTED='' \
+  DESKTOP_ENVIRONMENT=gnome \
+  DESKTOP_ENVIRONMENT_CONFIG_NAME=config_base \
+  KERNEL_CONFIGURE=no \
+  RELEASE=noble
 
-./compile.sh \
-	BOARD=orangepi5-ultra \
-	BRANCH=vendor \
-	RELEASE=noble \
-	KERNEL_CONFIGURE=no \
-	PREFER_DOCKER=no \
-	BUILD_DESKTOP=yes \
-	DESKTOP_ENVIRONMENT=gnome \
-	DESKTOP_ENVIRONMENT_CONFIG_NAME=config_base \
-	DESKTOP_APPGROUPS_SELECTED=''
+# Flash the latest image to /dev/sda
+# sudo dd if="output/images/Armbian-unofficial_26.02.0-trunk_Orangepi5-ultra_noble_vendor_6.1.115_gnome_desktop.img" of=/dev/sda bs=4M status=progress conv=fsync && sudo sync
