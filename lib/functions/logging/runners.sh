@@ -110,6 +110,14 @@ function chroot_sdcard_apt_get() {
 
 	display_alert "Extra envs for apt:" "${extra_envs[*]@Q}" "debug"
 
+	# Remove stale apt lock files left by previous failed/interrupted runs.
+	# "Held by process 0" means no real process holds the lock; it's just a leftover file.
+	run_host_command_logged rm -fv \
+		"${SDCARD}/var/cache/apt/archives/lock" \
+		"${SDCARD}/var/lib/apt/lists/lock" \
+		"${SDCARD}/var/lib/dpkg/lock" \
+		"${SDCARD}/var/lib/dpkg/lock-frontend"
+
 	local chroot_apt_result=1
 	if [[ "${apt_get_command}" == "apt-get" ]]; then
 		chroot_sdcard "${prelude_clean_env[@]}" "${extra_envs[@]}" apt-get "${apt_params[@]}" "$@" && chroot_apt_result=0
